@@ -2,10 +2,10 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from .db import db
+#from .db import db
 from api.models import db, User, Planets_Favorites, People_Favorites
 from api.utils import generate_sitemap, APIException
-from flask_bcrypt import Bcrypt 
+from flask_bcrypt import Bcrypt
 #from flask_jwt_extended import JWTManager, create_access_token,create_refresh_token, jwt_required, get_jwt_identity,get_jwt
 import datetime 
 import tempfile
@@ -24,7 +24,7 @@ def handle_hello():
     return jsonify(response_body), 200
 
 #ruta para crear el usuario
-@app.route('/signup', methods=['POST'])
+@api.route('/signup', methods=['POST'])
 def crear_usuario():
     
     email=request.json.get("email")
@@ -37,13 +37,12 @@ def crear_usuario():
     response_body = {
         "message": "usuario creado exitosamente",
         "first_name":newUser.first_name,
-        "last_name":newUser.last_name,
-        "id":newUser.id
+        "last_name":newUser.last_name
     }
     return jsonify(response_body), 201
 
 #ruta para obtener los usuarios
-@app.route('/user', methods=['GET'])
+@api.route('/user', methods=['GET'])
 def listar_usuarios():
     usuarios = User.query.all()
     usuarios = list(map(lambda user: user.serialize(), usuarios ))
@@ -56,7 +55,7 @@ def listar_usuarios():
     return jsonify(response_body), 200
 
 #ruta para agregar a una persona a favoritos base Favorites_People()
-@app.route('/favorites/people', methods=['POST'])
+@api.route('/favorites/people', methods=['POST'])
 def crear_personaje():
 
     user_id=request.json.get("user_id")
@@ -74,7 +73,7 @@ def crear_personaje():
     return jsonify(response_body), 200
 
 #ruta para obtener la lista de personajes favoritos de un usuario filtrar por usuario id actual
-@app.route('/favorites/people', methods=['GET'])
+@api.route('/favorites/people', methods=['GET'])
 def listar_personajes():
     personajes = People_Favorites.query.all()
     personajes = list(map(lambda people: people.serialize(), personajes ))
@@ -87,14 +86,14 @@ def listar_personajes():
     return jsonify(response_body), 200
 
 #ruta para obtener detalle de un personaje de los favoritos
-@app.route('/favorites/people/<int>', methods=['GET'])
+@api.route('/favorites/people/<int>', methods=['GET'])
 def listar_people2():
      response_body = {
         "msg": "Hello, this is your GET /people response "
     }
 
 #ruta agregar un plalneta al listado de los favoritos base Favorites_Planets()
-@app.route('/favorites/planet', methods=['POST'])
+@api.route('/favorites/planet', methods=['POST'])
 def create_planet():
 
     user_id=request.json.get("user_id")
@@ -113,7 +112,7 @@ def create_planet():
     return jsonify(response_body), 201
 
 #ruta para obtener listado de planetas favoritos de un usuario filtrar por usuario id actual
-@app.route('/favorites/planet', methods=['GET'])
+@api.route('/favorites/planet', methods=['GET'])
 def listar_planetas():    
     planetas = Planets_Favorites.query.all()
     planetas = list(map(lambda planetas: planetas.serialize(), planetas ))
@@ -126,7 +125,7 @@ def listar_planetas():
     return jsonify(response_body), 200
 
 #ruta para obtener el listado de planetas favoritos de un usuario
-@app.route('/favorites/planet/<int>', methods=['GET'])
+@api.route('/favorites/planet/<int>', methods=['GET'])
 def listar_planetas1():    
     response_body = {
         "msg": "Hello, this is your GET /people response "
@@ -134,7 +133,7 @@ def listar_planetas1():
 
 
 #ruta para obtener los planetas y personajes favoritos de un usuario
-@app.route('/favorites', methods=['GET'])
+@api.route('/favorites', methods=['GET'])
 def listar_Favoritos():    
     planetas = Planets_Favorites.query.all()
     planetas = list(map(lambda planetas: planetas.serialize(), planetas ))
